@@ -6,11 +6,12 @@
 #import "WWKAttendanceBinaryCheckViewController.h"
 #import <CoreLocation/CoreLocation.h>
 #import "WWKConversationLBSViewController.h"
+#import "WWKMessageListController.h"
 
 %hook AppDelegate
 
 - (_Bool)application:(id)arg1 didFinishLaunchingWithOptions:(id)arg2 {
-	[[WindowInfoManager manager] addToWindow:self.window];
+	//[[WindowInfoManager manager] addToWindow:self.window];
  	return %orig;
 }
 
@@ -28,58 +29,22 @@
 
 %end
 
-%hook WWKAttendanceRamdonCheckViewController
+%hook WWKMessageListController
 
-- (void)viewDidLoad {
+- (void)viewDidAppear:(BOOL)animated {
     %orig;
 
-    CGFloat width = [UIScreen mainScreen].bounds.size.width;
-    CGFloat height = [UIScreen mainScreen].bounds.size.height;
-    CGFloat viewSize = 40.0;
-    CGFloat viewOffset = 5.0;
-    SuspensionView *view = [[SuspensionView alloc] init];
-    view.tag = 10010;
-    view.backgroundColor = [UIColor colorWithRed:0.1 green:0.1 blue:0.1 alpha:0.6];
-    view.frame = CGRectMake(width - viewSize - viewOffset, height - viewSize - viewOffset, viewSize, viewSize);
-    view.layer.cornerRadius = view.bounds.size.width/2;
-    view.layer.shadowColor = [UIColor blackColor].CGColor;
-    view.layer.shadowOffset = CGSizeMake(1, 2);
-    view.layer.shadowRadius = viewSize/10;
-    view.layer.shadowOpacity = 0.9;
-    [self.view addSubview:view];
-    [self.view bringSubviewToFront:view];
-    
-    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapHandler:)];
-    [view addGestureRecognizer:tap]; 
+    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"设置定位" style:UIBarButtonItemStylePlain target:self action:@selector(xl_setLocationClicked:)];
 
-    
-	UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"选择照片" message:@"" preferredStyle:UIAlertControllerStyleAlert];
-    UIAlertAction *action = [UIAlertAction actionWithTitle:@"相册" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-        UIViewController *vc = (UIViewController *)[NSClassFromString(@"WWKConversationLBSViewController") new];
-        [self.navigationController pushViewController:vc animated:YES];
-    }];
-    UIAlertAction *action1 = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
-        
-    }];
-    [alert addAction:action];
-    [alert addAction:action1];
-    [self presentViewController:alert animated:YES completion:nil];
-
-    
-}
-
-- (void)viewWillDisappear:(BOOL)animated{
-    %orig;
-    UIView *view = [self.view viewWithTag:10010];
-    if (view) {
-        [view removeFromSuperview];
-    }
 }
 
 %new
-- (void)tapHandler:(UITapGestureRecognizer *)tap{
+- (void)xl_setLocationClicked:(id)sender {
     
+    UIViewController *vc = (UIViewController *)[NSClassFromString(@"WWKConversationLBSViewController") new];
+    [self.navigationController pushViewController:vc animated:YES];
 
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"kNotificationVCLoad" object:@"run了aaa"];
     
 }
 
@@ -116,8 +81,20 @@
 %hook CLLocation
 
 - (CLLocationCoordinate2D)coordinate {
-    CLLocationCoordinate2D coor = CLLocationCoordinate2DMake(32.034218, 118.722409);
-    return coor;
+
+    NSNumber *latitudeObj = [[NSUserDefaults standardUserDefaults] 
+    objectForKey:@"kXLLatitude"];
+    NSNumber *longitudeObj = [[NSUserDefaults standardUserDefaults] 
+    objectForKey:@"kXLLongitude"];
+
+    if(!latitudeObj || !longitudeObj){
+        return %orig;
+    }else {
+        CGFloat latitude = [latitudeObj floatValue];
+        CGFloat longitude = [longitudeObj floatValue];
+        CLLocationCoordinate2D coor = CLLocationCoordinate2DMake(latitude, longitude);
+        return coor;
+    }
 }
 
 %end
@@ -132,7 +109,12 @@
 - (void)p_send:(id)arg1 {
     WWKLocationItem *item = self.selectionItem;
     CLLocationCoordinate2D coor = item.coordinate;
+
     NSString *string = [NSString stringWithFormat:@"%lf,%lf", coor.latitude, coor.longitude];
+
+    [[NSUserDefaults standardUserDefaults] setObject:@(coor.latitude) forKey:@"kXLLatitude"];
+    [[NSUserDefaults standardUserDefaults] setObject:@(coor.longitude) forKey:@"kXLLongitude"];
+
     [[NSNotificationCenter defaultCenter] postNotificationName:@"kNotificationVCLoad" object:string];
     %orig;
 }
