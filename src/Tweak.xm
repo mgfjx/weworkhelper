@@ -7,7 +7,6 @@
 #import <CoreLocation/CoreLocation.h>
 #import "WWKConversationLBSViewController.h"
 #import "WWKMessageListController.h"
-#import "LocationSelectViewController.h"
 
 %hook AppDelegate
 

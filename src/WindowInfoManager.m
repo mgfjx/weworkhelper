@@ -72,12 +72,14 @@ static WindowInfoManager *manager ;
 }
 
 - (void)ex_viewDidLoad {
+    /*
     NSMutableString *string = [NSMutableString string];
     for (UIViewController *vc in self.navigationController.viewControllers) {
         [string appendString:NSStringFromClass([vc class])];
         [string appendString:@","];
     }
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"kNotificationVCLoad" object:[string copy]];
+     */
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"kNotificationVCLoad" object:NSStringFromClass([self class])];
     [self ex_viewDidLoad];
 }
 

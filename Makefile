@@ -9,7 +9,7 @@ FINALPACKAGE = 1
 include $(THEOS)/makefiles/common.mk
 
 TWEAK_NAME = WeWorkHelper
-WeWorkHelper_FILES = $(wildcard *.xm) $(wildcard *.m)
+WeWorkHelper_FILES = $(wildcard src/*.xm) $(wildcard src/*.m)
 
 include $(THEOS_MAKE_PATH)/tweak.mk
 
