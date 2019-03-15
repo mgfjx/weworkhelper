@@ -23,8 +23,12 @@
 - (void)setSourceType:(UIImagePickerControllerSourceType)sourceType {
     sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
     self.mediaTypes = @[(NSString*)kUTTypeImage];
-    self.allowsEditing = YES;
     %orig;
+}
+
+- (void)setAllowsEditing:(BOOL)allowsEditing {
+	allowsEditing = YES;
+	%orig;
 }
 
 
