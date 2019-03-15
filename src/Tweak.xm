@@ -11,7 +11,7 @@
 %hook AppDelegate
 
 - (_Bool)application:(id)arg1 didFinishLaunchingWithOptions:(id)arg2 {
-	[[WindowInfoManager manager] addToWindow:self.window];
+	//[[WindowInfoManager manager] addToWindow:self.window];
  	return %orig;
 }
 
@@ -23,6 +23,7 @@
 - (void)setSourceType:(UIImagePickerControllerSourceType)sourceType {
     sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
     self.mediaTypes = @[(NSString*)kUTTypeImage];
+    self.allowsEditing = YES;
     %orig;
 }
 
