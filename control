@@ -3,7 +3,7 @@ Name: WeWorkHelper企业微信助手
 Depends: mobilesubstrate
 Version: 1.0.0
 Architecture: iphoneos-arm
-Description: 企业微信助手：可实现虚拟定位、远程打卡。打卡现场拍照改为从相册获取。声明：仅建议紧急情况使用，切勿长期迟到早退！
+Description: 企业微信助手(2.7.5)：可实现虚拟定位、远程打卡。打卡现场拍照改为从相册获取。声明：仅建议紧急情况使用，切勿长期迟到早退！
 Maintainer: mgfjx
 Author: mgfjx
 Section: Tweaks

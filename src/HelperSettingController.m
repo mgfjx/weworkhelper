@@ -154,23 +154,24 @@ void viewDidLoad(id self, SEL _cmd) {
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.section == 1 && indexPath.row == 1) {
-        //runtime添加继承类
-        Class LocationSelectViewController = objc_allocateClassPair(NSClassFromString(@"WWKConversationLBSViewController"), "LocationSelectViewController", 0);
-        
-        BOOL success = class_addMethod(LocationSelectViewController, @selector(p_send:), (IMP)p_send, "V@:");
-        if (success) {
-            NSLog(@"添加方法成功");
-        }
-        
-        {
-            BOOL success = class_addMethod(LocationSelectViewController, @selector(viewDidLoad), (IMP)viewDidLoad, "V@:");
-            if (success) {
-                NSLog(@"添加方法成功");
-            }
-        }
-        
-        id vc = [LocationSelectViewController new];
-        [self.navigationController pushViewController:(UIViewController *)vc animated:YES];
+//runtime添加继承类
+Class LocationSelectViewController = objc_allocateClassPair(NSClassFromString(@"WWKConversationLBSViewController"), "LocationSelectViewController", 0);
+{
+    BOOL success = class_addMethod(LocationSelectViewController, @selector(p_send:), (IMP)p_send, "V@:");
+    if (success) {
+        NSLog(@"添加方法成功");
+    }
+}
+
+{
+    BOOL success = class_addMethod(LocationSelectViewController, @selector(viewDidLoad), (IMP)viewDidLoad, "V@:");
+    if (success) {
+        NSLog(@"添加方法成功");
+    }
+}
+
+id vc = [LocationSelectViewController new];
+[self.navigationController pushViewController:(UIViewController *)vc animated:YES];
     }
 }
 
